@@ -1,0 +1,17 @@
+:root {
+    --fontSize: calc(16px + 0.5vw);
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out;
+    font-size: var(--fontSize);
+}
+
+a {
+    text-decoration: none;
+    color: #2e3369;
+}
