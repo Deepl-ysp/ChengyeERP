@@ -1,0 +1,59 @@
+{
+    "packages": [
+        {
+            "name": "mezon/router",
+            "version": "1.5.1",
+            "version_normalized": "1.5.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alexdodonov/mezon-router.git",
+                "reference": "dd6f342229d5618e36fb27b28352e00eb951fca0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alexdodonov/mezon-router/zipball/dd6f342229d5618e36fb27b28352e00eb951fca0",
+                "reference": "dd6f342229d5618e36fb27b28352e00eb951fca0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4.0"
+            },
+            "require-dev": {
+                "infection/infection": "^0.21.5",
+                "mezon/functional": "^1.0",
+                "phpunit/phpunit": "^8.5",
+                "vimeo/psalm": "^4.2"
+            },
+            "time": "2022-09-13T12:18:18+00:00",
+            "type": "library",
+            "installation-source": "source",
+            "autoload": {
+                "psr-4": {
+                    "Mezon\\Router\\": "Mezon/Router/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dodonov Alexey",
+                    "email": "alexey@dodonov.pro",
+                    "homepage": "http://gdzone.ru",
+                    "role": "Founder"
+                }
+            ],
+            "description": "Small and fast routing framework",
+            "homepage": "https://github.com/alexdodonov/mezon-router",
+            "support": {
+                "email": "alexey@dodonov.pro",
+                "issues": "https://github.com/alexdodonov/mezon-router/issues",
+                "source": "https://github.com/alexdodonov/mezon-router"
+            },
+            "install-path": "../mezon/router"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}
