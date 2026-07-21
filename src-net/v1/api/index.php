@@ -205,6 +205,7 @@ require_once __DIR__ . '/finance/receivable/get.php';
 $getterFinanceReceivable = new \GetterFinanceReceivable($getter);
 $router->addRoute("/finance/receivable/getList", [$getterFinanceReceivable, "getList"]);
 $router->addRoute("/finance/receivable/getByCustomer", [$getterFinanceReceivable, "getByCustomer"]);
+$router->addRoute("/finance/receivable/getReconciliation", [$getterFinanceReceivable, "getReconciliation"]);
 
 require_once __DIR__ . '/finance/payable/get.php';
 $getterFinancePayable = new \GetterFinancePayable($getter);

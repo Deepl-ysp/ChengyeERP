@@ -816,6 +816,6 @@ const downloadOrderImage = async () => {
 </template>
 
 <style lang="scss" scoped>
-@import './order-form.scss';
+@use './order-form.scss';
 .order-number { font-size: 1rem; color: var(--text-muted); font-weight: normal; margin-left: 0.5rem; }
 </style>

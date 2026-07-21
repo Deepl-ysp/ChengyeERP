@@ -122,6 +122,8 @@ class SetterWarehousePurchase
                 'confirm_time' => date('Y-m-d H:i:s'),
             ], ['number' => $purchaseNumber]);
 
+            $this->syncFinanceFlow($purchaseNumber, $order['supplier_number'], $order['supplier_name'], $order['total_amount'], $operator);
+
             return ['success' => true, 'message' => '采购单已确认'];
         } catch (\PDOException $e) {
             http_response_code(500);
@@ -196,10 +198,6 @@ class SetterWarehousePurchase
 
             $this->db->update('purchase_order', $updateData, ['number' => $purchaseNumber]);
 
-            if ($newStatus === 2) {
-                $this->syncFinanceFlow($purchaseNumber, $order['supplier_number'], $order['supplier_name'], $order['total_amount'], $operator);
-            }
-
             $message = $newStatus === 2 ? '采购单已入库' : '采购单已完成';
             return ['success' => true, 'message' => $message];
         } catch (\PDOException $e) {
@@ -211,7 +209,9 @@ class SetterWarehousePurchase
     private function syncFinanceFlow($purchaseNumber, $supplierNumber, $supplierName, $totalAmount, $operator)
     {
         try {
+            $flowNumber = (int) (round(microtime(true) * 1000) * 10000 + mt_rand(0, 9999));
             $this->db->insert('finance_flow', [
+                'number' => $flowNumber,
                 'flow_type' => 1,
                 'direction' => 1,
                 'party_type' => 1,
@@ -224,7 +224,7 @@ class SetterWarehousePurchase
                 'remark' => '采购付款',
             ]);
         } catch (\PDOException $e) {
-            // 静默失败
+            error_log('采购同步财务流水失败: ' . $e->getMessage());
         }
     }
 }

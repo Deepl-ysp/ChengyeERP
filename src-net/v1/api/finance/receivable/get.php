@@ -107,4 +107,89 @@ class GetterFinanceReceivable
         );
         return ['list' => $list];
     }
+
+    /**
+     * 客户对账：按客户+时间段查询订单和付款记录，计算欠款
+     */
+    public function getReconciliation($route, $params = [])
+    {
+        $customerNumber = isset($_GET['customer_number']) ? (int) $_GET['customer_number'] : 0;
+        $startDate = isset($_GET['start_date']) ? $_GET['start_date'] : '';
+        $endDate = isset($_GET['end_date']) ? $_GET['end_date'] : '';
+
+        if ($customerNumber <= 0) {
+            return ['success' => false, 'message' => '客户编号不能为空'];
+        }
+
+        $where = ["om.is_deleted = 0", "om.order_status != 4", "om.customer_number = ?"];
+        $params = [$customerNumber];
+
+        if ($startDate !== '') {
+            $where[] = "om.create_time >= ?";
+            $params[] = $startDate . ' 00:00:00';
+        }
+        if ($endDate !== '') {
+            $where[] = "om.create_time <= ?";
+            $params[] = $endDate . ' 23:59:59';
+        }
+
+        $whereSql = implode(' AND ', $where);
+
+        $orders = $this->db->query(
+            "SELECT om.id, om.number, om.customer_name, om.total_amount, om.paid_amount,
+                (om.total_amount - om.paid_amount) AS unreceived_amount,
+                om.order_status, om.payment_status, om.create_time
+             FROM order_main om
+             WHERE $whereSql
+             ORDER BY om.create_time DESC",
+            $params
+        );
+
+        $payments = [];
+        if (!empty($orders)) {
+            $orderNumbers = array_column($orders, 'number');
+            $placeholders = implode(',', array_fill(0, count($orderNumbers), '?'));
+            $payments = $this->db->query(
+                "SELECT op.order_number, op.amount, op.payment_method, op.payment_time, op.operator
+                 FROM order_payment op
+                 WHERE op.order_number IN ($placeholders)
+                 ORDER BY op.payment_time DESC",
+                $orderNumbers
+            );
+        }
+
+        $orderTotal = 0;
+        $paidTotal = 0;
+        foreach ($orders as $order) {
+            $orderTotal += (float) $order['total_amount'];
+            $paidTotal += (float) $order['paid_amount'];
+        }
+
+        $customerInfo = [];
+        if (!empty($orders)) {
+            $customerInfo = $this->db->query(
+                "SELECT name, phone, address FROM customer_main WHERE number = ? LIMIT 1",
+                [$customerNumber]
+            );
+        }
+
+        return [
+            'success' => true,
+            'data' => [
+                'customer_number' => $customerNumber,
+                'customer_name' => $customerInfo[0]['name'] ?? '',
+                'customer_phone' => $customerInfo[0]['phone'] ?? '',
+                'customer_address' => $customerInfo[0]['address'] ?? '',
+                'period' => ['start' => $startDate, 'end' => $endDate],
+                'summary' => [
+                    'order_count' => count($orders),
+                    'order_total' => $orderTotal,
+                    'paid_total' => $paidTotal,
+                    'unpaid_total' => $orderTotal - $paidTotal,
+                ],
+                'orders' => $orders,
+                'payments' => $payments,
+            ],
+        ];
+    }
 }

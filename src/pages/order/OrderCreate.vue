@@ -1048,5 +1048,5 @@ watch(orderType, (val) => {
 </template>
 
 <style lang="scss" scoped>
-@import './order-form.scss';
+@use './order-form.scss';
 </style>

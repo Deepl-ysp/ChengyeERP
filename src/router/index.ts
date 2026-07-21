@@ -163,6 +163,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import("@pages/finance/FinanceReconciliation.vue"),
       },
       {
+        path: "customer-reconciliation",
+        name: "FinanceCustomerReconciliation",
+        component: () => import("@pages/finance/FinanceCustomerReconciliation.vue"),
+      },
+      {
         path: "profit",
         name: "FinanceProfit",
         component: () => import("@pages/finance/FinanceProfit.vue"),

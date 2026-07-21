@@ -12,7 +12,7 @@ export default defineConfig({
     build: {
     outDir: "build",
     assetsDir: "media",
-    sourcemap: true,
+    sourcemap: false,
     minify: "terser",
     target: "es2020",
     cssCodeSplit: true,
