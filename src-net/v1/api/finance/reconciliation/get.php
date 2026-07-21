@@ -57,7 +57,7 @@ class GetterFinanceReconciliation
     /**
      * 周期对账详情：返回指定时间段内的所有订单、流水
      */
-    public function getDetail()
+    public function getDetail($route, $params = [])
     {
         $startTime = $_GET['start_time'] ?? '';
         $endTime = $_GET['end_time'] ?? '';

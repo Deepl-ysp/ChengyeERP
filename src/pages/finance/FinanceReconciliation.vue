@@ -21,12 +21,13 @@ interface ReconItem {
 }
 
 interface DetailData {
-  orders: Record<string, unknown>[];
-  flows: Record<string, unknown>[];
+  orders: { id: number; number: number; customer_name: string; total_amount: number; paid_amount: number; payment_status: number; order_status: number; create_time: string }[];
+  flows: { id: number; number: number; flow_type: number; direction: number; party_name: string; amount: number; flow_time: string; operator: string }[];
   order_count: number;
   flow_count: number;
   income_total: number;
   expense_total: number;
+  net_amount: number;
 }
 
 const list = ref<ReconItem[]>([]);
@@ -426,7 +427,7 @@ const directionText = (d: number) => d === 0 ? '收入' : '支出';
   padding: 0;
 }
 
-. {
+.form-actions {
   display: flex;
   justify-content: center;
   align-items: center;

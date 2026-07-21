@@ -400,7 +400,7 @@ const methodText = (m: number) => ['现金', '微信', '支付宝', '银行转�
   }
 }
 
-. {
+.form-actions {
   display: flex;
   justify-content: center;
   align-items: center;

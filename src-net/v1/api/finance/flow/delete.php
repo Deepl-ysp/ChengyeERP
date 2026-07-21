@@ -13,7 +13,7 @@ class SetterFinanceFlowDelete
         $this->reader = $dbReader;
     }
 
-    public function deleteFlow()
+    public function deleteFlow($route, $params = [])
     {
         $rawBody = file_get_contents('php://input');
         $data = json_decode($rawBody, true);

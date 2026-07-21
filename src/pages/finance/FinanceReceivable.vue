@@ -381,7 +381,7 @@ const orderStatusText = (s: number) => ['待处理', '已确认', '已发货', '
   }
 }
 
-. {
+.form-actions {
   display: flex;
   justify-content: center;
   align-items: center;

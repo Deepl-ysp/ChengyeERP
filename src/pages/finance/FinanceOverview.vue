@@ -118,7 +118,7 @@ const profitStatus = computed(() => {
 </script>
 
 <template>
-  <div class="overview-container" v-loading="loading">
+  <div class="overview-container">
     <div class="overview-header">
       <h2>资金概览</h2>
       <span class="overview-date">{{ new Date().toLocaleDateString('zh-CN') }}</span>

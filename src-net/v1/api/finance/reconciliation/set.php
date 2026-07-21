@@ -13,7 +13,7 @@ class SetterFinanceReconciliation
         $this->reader = $dbReader;
     }
 
-    public function reconcile()
+    public function reconcile($route, $params = [])
     {
         $rawBody = file_get_contents('php://input');
         $data = json_decode($rawBody, true);

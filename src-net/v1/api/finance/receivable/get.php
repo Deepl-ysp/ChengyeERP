@@ -90,7 +90,7 @@ class GetterFinanceReceivable
     /**
      * 按客户汇总应收
      */
-    public function getByCustomer()
+    public function getByCustomer($route, $params = [])
     {
         $list = $this->db->query(
             "SELECT om.customer_number, om.customer_name,
@@ -101,8 +101,8 @@ class GetterFinanceReceivable
              FROM order_main om
              WHERE om.is_deleted = 0 AND om.order_status != 4
              GROUP BY om.customer_number, om.customer_name
-             HAVING unreceived_amount > 0.01
-             ORDER BY unreceived_amount DESC
+             HAVING COALESCE(SUM(om.total_amount - om.paid_amount), 0) > 0.01
+             ORDER BY COALESCE(SUM(om.total_amount - om.paid_amount), 0) DESC
              LIMIT 100"
         );
         return ['list' => $list];

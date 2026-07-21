@@ -196,11 +196,35 @@ class SetterWarehousePurchase
 
             $this->db->update('purchase_order', $updateData, ['number' => $purchaseNumber]);
 
+            if ($newStatus === 2) {
+                $this->syncFinanceFlow($purchaseNumber, $order['supplier_number'], $order['supplier_name'], $order['total_amount'], $operator);
+            }
+
             $message = $newStatus === 2 ? '采购单已入库' : '采购单已完成';
             return ['success' => true, 'message' => $message];
         } catch (\PDOException $e) {
             http_response_code(500);
             return ['success' => false, 'message' => '操作失败：' . $e->getMessage()];
+        }
+    }
+
+    private function syncFinanceFlow($purchaseNumber, $supplierNumber, $supplierName, $totalAmount, $operator)
+    {
+        try {
+            $this->db->insert('finance_flow', [
+                'flow_type' => 1,
+                'direction' => 1,
+                'party_type' => 1,
+                'party_number' => (int) $supplierNumber,
+                'party_name' => $supplierName ?: '供应商',
+                'related_number' => (int) $purchaseNumber,
+                'amount' => (float) $totalAmount,
+                'payment_method' => 4,
+                'operator' => $operator,
+                'remark' => '采购付款',
+            ]);
+        } catch (\PDOException $e) {
+            // 静默失败
         }
     }
 }

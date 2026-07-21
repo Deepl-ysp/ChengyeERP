@@ -3,7 +3,7 @@ import { ref, reactive, onMounted, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { API_URL } from '@config/net';
 import { confirm } from '@config/confirmSettings';
-import from '@components/.vue';
+import PagInation from '@components/PagInation.vue'
 
 interface RawPriceItem {
   id: string;
@@ -327,7 +327,7 @@ watch([currentPage, pageSize], () => {
           </tr>
         </tbody>
       </table>
-      < v-if="total > 0" :total="total" v-model:currentPage="currentPage" v-model:pageSize="pageSize" />
+      <PagInation v-if="total > 0" :total="total" v-model:currentPage="currentPage" v-model:pageSize="pageSize" />
     </div>
 
     <div v-if="modalVisible" class="modal-overlay" @click.self="modalVisible = false">

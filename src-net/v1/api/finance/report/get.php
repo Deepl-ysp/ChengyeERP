@@ -14,7 +14,7 @@ class GetterFinanceReport
     /**
      * 利润分析：订单收入 - 采购成本 - 其他支出
      */
-    public function getProfit()
+    public function getProfit($route, $params = [])
     {
         $startDate = $_GET['start_date'] ?? date('Y-m-01');
         $endDate = $_GET['end_date'] ?? date('Y-m-d');

@@ -3,7 +3,7 @@ import { ref, onMounted, watch, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { API_URL } from '@config/net';
 import { confirm } from '@config/confirmSettings';
-import from '@components/.vue';
+import PagInation from '@components/PagInation.vue'
 
 // 注入父组件提供的刷新函数，用于删除/状态切换后更新左侧菜单客户列表
 const refreshCustomers = inject<() => Promise<void>>('refreshCustomers');
@@ -205,7 +205,7 @@ const handleStatusChange = async (item: Customer, newStatus: status) => {
           </tr>
         </tbody>
       </table>
-      < v-if="total > 0" :total="total" v-model:currentPage="currentPage" v-model:pageSize="pageSize" />
+      <PagInation v-if="total > 0" :total="total" v-model:currentPage="currentPage" v-model:pageSize="pageSize" />
     </div>
   </div>
 </template>

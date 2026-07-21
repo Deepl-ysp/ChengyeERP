@@ -3,7 +3,7 @@ import { ref, reactive, onMounted, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { API_URL } from '@config/net';
 import { confirm } from '@config/confirmSettings';
-import from '@components/.vue';
+import PagInation from '@components/PagInation.vue'
 
 interface RawQuoteItem {
   id: string;
@@ -92,7 +92,7 @@ const fetchList = async () => {
     total.value = Number(data.total) || 0;
     // 从列表首条记录中获取 supplier_id 和 supplier_name（用于新增时绑定）
     if (list.value.length > 0) {
-      const firstItem = list.value[0];
+      const firstItem = list.value[0]!;
       if (!supplierId.value) supplierId.value = firstItem.supplier_id;
       if (!supplierName.value) supplierName.value = firstItem.supplier_name || '';
     }
@@ -282,7 +282,7 @@ watch([currentPage, pageSize], () => {
           </tr>
         </tbody>
       </table>
-      < v-if="total > 0" :total="total" v-model:currentPage="currentPage" v-model:pageSize="pageSize" />
+      <PagInation v-if="total > 0" :total="total" v-model:currentPage="currentPage" v-model:pageSize="pageSize" />
     </div>
 
     <div v-if="modalVisible" class="modal-overlay" @click.self="modalVisible = false">

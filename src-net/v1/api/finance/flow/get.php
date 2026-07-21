@@ -106,7 +106,7 @@ class GetterFinanceFlow
     /**
      * 资金概览数据
      */
-    public function getOverview()
+    public function getOverview($route, $params = [])
     {
         // 累计收入/支出
         $sumResult = $this->db->query(
@@ -152,8 +152,8 @@ class GetterFinanceFlow
              FROM order_main
              WHERE is_deleted = 0 AND order_status != 4
              GROUP BY customer_number, customer_name
-             HAVING total_amount - paid_amount > 0.01
-             ORDER BY (total_amount - paid_amount) DESC
+             HAVING COALESCE(SUM(total_amount), 0) - COALESCE(SUM(paid_amount), 0) > 0.01
+             ORDER BY COALESCE(SUM(total_amount), 0) - COALESCE(SUM(paid_amount), 0) DESC
              LIMIT 10"
         );
 

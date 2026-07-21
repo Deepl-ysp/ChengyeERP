@@ -65,7 +65,7 @@ const initChart = () => {
   if (!ctx || data.value.monthly.length === 0) return;
 
   // 销毁旧图
-  const chart = (Chart as unknown as { getChart?: (ctx: HTMLCanvasElement) => unknown }).getChart?.(ctx);
+  const chart = (Chart as unknown as { getChart?: (ctx: HTMLCanvasElement) => { destroy: () => void } }).getChart?.(ctx);
   if (chart) chart.destroy();
 
   new Chart(ctx, {
@@ -114,7 +114,7 @@ const profitStatus = computed(() => {
 </script>
 
 <template>
-  <div class="page-container" v-loading="loading">
+  <div class="page-container">
     <div class="page-header">
       <h2>利润分析</h2>
       <div class="date-bar">

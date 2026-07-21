@@ -3,7 +3,7 @@ import { ref, onMounted, watch, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { API_URL } from '@config/net';
 import { confirm } from '@config/confirmSettings';
-import from '@components/.vue';
+import PagInation from '@components/PagInation.vue'
 
 // 注入父组件提供的刷新函数，用于删除/状态切换后更新左侧菜单供应商列表
 const refreshSuppliers = inject<() => Promise<void>>('refreshSuppliers');
@@ -205,7 +205,7 @@ const handleStatusChange = async (item: Supplier, newStatus: status) => {
           </tr>
         </tbody>
       </table>
-      < v-if="total > 0" :total="total" v-model:currentPage="currentPage" v-model:pageSize="pageSize" />
+      <PagInation v-if="total > 0" :total="total" v-model:currentPage="currentPage" v-model:pageSize="pageSize" />
     </div>
   </div>
 </template>
