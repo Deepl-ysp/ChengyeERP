@@ -44,3 +44,6 @@ push.**
 
 # version
 /versions/**
+
+#build dir
+/build
