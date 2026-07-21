@@ -67,41 +67,27 @@ const endNum = computed(() => Math.min(props.currentPage * props.pageSize, props
 </script>
 
 <template>
-  <div class="pagination-wrapper">
-    <div class="pagination-info">
+  <div class="-wrapper">
+    <div class="-info">
       <span>共 {{ total }} 条记录</span>
       <span>{{ startNum }} - {{ endNum }} 条</span>
     </div>
-    <div class="pagination-container">
-      <button
-        class="pagination-btn pagination-prev"
-        :disabled="currentPage <= 1"
-        @click="handlePrev"
-      >
+    <div class="-container">
+      <button class="-btn -prev" :disabled="currentPage <= 1" @click="handlePrev">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M15 19l-7-7 7-7" />
         </svg>
       </button>
-      <button
-        v-for="page in pages"
-        :key="page"
-        class="pagination-btn pagination-page"
-        :class="{ active: page === currentPage }"
-        :disabled="page === '...'"
-        @click="typeof page === 'number' && handlePage(page)"
-      >
+      <button v-for="page in pages" :key="page" class="-btn -page" :class="{ active: page === currentPage }"
+        :disabled="page === '...'" @click="typeof page === 'number' && handlePage(page)">
         {{ page }}
       </button>
-      <button
-        class="pagination-btn pagination-next"
-        :disabled="currentPage >= totalPages"
-        @click="handleNext"
-      >
+      <button class="-btn -next" :disabled="currentPage >= totalPages" @click="handleNext">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M9 5l7 7-7 7" />
         </svg>
       </button>
-      <select class="pagination-select" @change="handleSizeChange">
+      <select class="-select" @change="handleSizeChange">
         <option v-for="size in pageSizes" :key="size" :value="size">
           {{ size }} 条/页
         </option>
@@ -111,7 +97,7 @@ const endNum = computed(() => Math.min(props.currentPage * props.pageSize, props
 </template>
 
 <style lang="scss" scoped>
-.pagination-wrapper {
+.-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -119,7 +105,7 @@ const endNum = computed(() => Math.min(props.currentPage * props.pageSize, props
   background: var(--bg-card);
   border-top: 1px solid var(--border-color);
 
-  .pagination-info {
+  .-info {
     display: flex;
     gap: 1rem;
     font-size: 0.85rem;
@@ -131,13 +117,13 @@ const endNum = computed(() => Math.min(props.currentPage * props.pageSize, props
     }
   }
 
-  .pagination-container {
+  .-container {
     display: flex;
     align-items: center;
     gap: 0.3rem;
   }
 
-  .pagination-btn {
+  .-btn {
     min-width: 32px;
     height: 32px;
     display: flex;
@@ -161,7 +147,7 @@ const endNum = computed(() => Math.min(props.currentPage * props.pageSize, props
       cursor: not-allowed;
     }
 
-    &.pagination-page {
+    &.-page {
       width: 32px;
 
       &.active {
@@ -171,13 +157,13 @@ const endNum = computed(() => Math.min(props.currentPage * props.pageSize, props
       }
     }
 
-    &.pagination-prev,
-    &.pagination-next {
+    &.-prev,
+    &.-next {
       padding: 0 0.5rem;
     }
   }
 
-  .pagination-select {
+  .-select {
     margin-left: 0.5rem;
     padding: 0.4rem 0.5rem;
     border: 1px solid var(--border-color);

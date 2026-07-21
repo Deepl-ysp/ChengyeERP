@@ -2,7 +2,8 @@
 import { ref, onMounted, watch, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { API_URL } from '@config/net';
-import Pagination from '@components/Pagination.vue';
+import { confirm } from '@config/confirmSettings';
+import from '@components/.vue';
 
 // 注入父组件提供的刷新函数，用于删除/状态切换后更新左侧菜单仓库列表
 const refreshWarehouses = inject<() => Promise<void>>('refreshWarehouses');
@@ -104,7 +105,7 @@ const handleEdit = (item: Warehouse) => {
 };
 
 const handleDelete = async (item: Warehouse) => {
-  if (!confirm(`确认删除仓库"${item.name}"吗？`)) return;
+  if (!confirm(`确认删除仓库"${item.name}"吗？`, 'warehouse.deleteWarehouse')) return;
   try {
     const res = await fetch(`${API_URL}v1/api/warehouse/delete?number=${item.number}`, {
       method: 'DELETE',
@@ -178,33 +179,19 @@ const handleStatusChange = async (item: Warehouse, newStatus: status) => {
             </td>
             <td>{{ item.remark }}</td>
             <td>
-              <button
-                v-if="item.status !== status.Disabled"
-                class="btn btn-disable"
-                @click="handleStatusChange(item, status.Disabled)"
-              >禁用</button>
-              <button
-                v-if="item.status !== status.Enable"
-                class="btn btn-enable"
-                @click="handleStatusChange(item, status.Enable)"
-              >启用</button>
-              <button
-                v-if="item.status !== status.Abnormal"
-                class="btn btn-abnormal"
-                @click="handleStatusChange(item, status.Abnormal)"
-              >异常</button>
+              <button v-if="item.status !== status.Disabled" class="btn btn-disable"
+                @click="handleStatusChange(item, status.Disabled)">禁用</button>
+              <button v-if="item.status !== status.Enable" class="btn btn-enable"
+                @click="handleStatusChange(item, status.Enable)">启用</button>
+              <button v-if="item.status !== status.Abnormal" class="btn btn-abnormal"
+                @click="handleStatusChange(item, status.Abnormal)">异常</button>
               <button class="btn btn-edit" @click="handleEdit(item)">修改</button>
               <button class="btn btn-delete" @click="handleDelete(item)">删除</button>
             </td>
           </tr>
         </tbody>
       </table>
-      <Pagination
-        v-if="total > 0"
-        :total="total"
-        v-model:currentPage="currentPage"
-        v-model:pageSize="pageSize"
-      />
+      < v-if="total > 0" :total="total" v-model:currentPage="currentPage" v-model:pageSize="pageSize" />
     </div>
   </div>
 </template>
@@ -300,10 +287,12 @@ const handleStatusChange = async (item: Warehouse, newStatus: status) => {
       background: #d4edda;
       color: #155724;
     }
+
     &.status-disabled {
       background: #e2e8f0;
       color: #4a5568;
     }
+
     &.status-abnormal {
       background: #f8d7da;
       color: #721c24;
@@ -330,34 +319,43 @@ const handleStatusChange = async (item: Warehouse, newStatus: status) => {
     &.btn-disable {
       background: #e2e8f0;
       color: #4a5568;
+
       &:hover {
         background: #cbd5e0;
       }
     }
+
     &.btn-enable {
       background: #d4edda;
       color: #155724;
+
       &:hover {
         background: #c3e6cb;
       }
     }
+
     &.btn-abnormal {
       background: #fff3cd;
       color: #856404;
+
       &:hover {
         background: #ffeaa7;
       }
     }
+
     &.btn-edit {
       background: #cce5ff;
       color: #004085;
+
       &:hover {
         background: #b8d4ff;
       }
     }
+
     &.btn-delete {
       background: #f8d7da;
       color: #721c24;
+
       &:hover {
         background: #f5c6cb;
       }

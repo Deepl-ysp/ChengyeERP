@@ -20,7 +20,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import("@pages/order/OrderList.vue"),
       },
       {
-        path: "detail/:id?",
+        path: "detail/:number?",
         name: "OrderDetail",
         component: () => import("@pages/order/OrderDetail.vue"),
       },
@@ -28,6 +28,11 @@ const routes: RouteRecordRaw[] = [
         path: "create",
         name: "OrderCreate",
         component: () => import("@pages/order/OrderCreate.vue"),
+      },
+      {
+        path: "edit/:number",
+        name: "OrderEdit",
+        component: () => import("@pages/order/OrderEdit.vue"),
       },
     ],
   },
@@ -49,6 +54,11 @@ const routes: RouteRecordRaw[] = [
         path: "create",
         name: "WarehouseCreate",
         component: () => import("@pages/warehouse/WarehouseCreate.vue"),
+      },
+      {
+        path: "purchase",
+        name: "WarehousePurchase",
+        component: () => import("@pages/warehouse/WarehousePurchase.vue"),
       },
       {
         path: "inventory",
@@ -117,6 +127,46 @@ const routes: RouteRecordRaw[] = [
         name: "SupplierManage",
         component: () => import("@pages/supplier/SupplierManage.vue")
       }
+    ],
+  },
+  {
+    path: "/finance",
+    component: () => import("@pages/FinanceView.vue"),
+    children: [
+      {
+        path: "",
+        redirect: "/finance/overview",
+      },
+      {
+        path: "overview",
+        name: "FinanceOverview",
+        component: () => import("@pages/finance/FinanceOverview.vue"),
+      },
+      {
+        path: "flow",
+        name: "FinanceFlow",
+        component: () => import("@pages/finance/FinanceFlow.vue"),
+      },
+      {
+        path: "receivable",
+        name: "FinanceReceivable",
+        component: () => import("@pages/finance/FinanceReceivable.vue"),
+      },
+      {
+        path: "payable",
+        name: "FinancePayable",
+        component: () => import("@pages/finance/FinancePayable.vue"),
+      },
+      {
+        path: "reconciliation",
+        name: "FinanceReconciliation",
+        component: () => import("@pages/finance/FinanceReconciliation.vue"),
+      },
+      {
+        path: "profit",
+        name: "FinanceProfit",
+        component: () => import("@pages/finance/FinanceProfit.vue"),
+      },
     ],
   },
 ];

@@ -11,6 +11,7 @@ import CollapseMenu from '@components/CollapseMenu.vue';
       <RouterLink to="/Warehouse" class="NavLnk" active-class="active">仓库管理</RouterLink>
       <RouterLink to="/Customer" class="NavLnk" active-class="active">客户管理</RouterLink>
       <RouterLink to="/Supplier" class="NavLnk" active-class="active">供应商管理</RouterLink>
+      <RouterLink to="/finance" class="NavLnk" active-class="active">财务管理</RouterLink>
     </header>
     <main class="Main">
       <RouterView />
@@ -27,10 +28,9 @@ import CollapseMenu from '@components/CollapseMenu.vue';
   width: 100vw;
   height: 100vh;
   display: grid;
-  grid-template-rows: 64px 1fr 48px; /* 固定高度更商务 */
+  grid-template-rows: 64px 1fr 48px;
 }
 
-/* 导航栏 – 深蓝商务色 */
 .Nav {
   background-color: #1a2a3a;
   display: flex;
@@ -68,14 +68,12 @@ import CollapseMenu from '@components/CollapseMenu.vue';
   }
 }
 
-/* 主内容区 – 浅灰背景，干净 */
 .Main {
   background-color: #f2f5f9;
   padding: 1.5rem;
   overflow-y: auto;
 }
 
-/* 页脚 – 深色稳重 */
 .Footer {
   background-color: #1a2a3a;
   color: #9aaec2;

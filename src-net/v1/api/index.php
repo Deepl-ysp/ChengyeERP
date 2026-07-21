@@ -25,10 +25,34 @@ $updatter = new \DbUpdate($pdo);
 
 $router = new \Mezon\Router\Router();
 
+// ===== 订单管理路由 =====
 require_once __DIR__ . '/order/get.php';
 $getterOrder = new \GetterOrder($getter);
-$router->addRoute("/order/getList/[i:page]/[i:size]", [$getterOrder, "getList"]);
-$router->addRoute("/order/getDetails/[i:order]", [$getterOrder, "getDetails"]);
+$router->addRoute("/order/getList", [$getterOrder, "getList"]);
+
+require_once __DIR__ . '/order/getDetail.php';
+$getterOrderDetail = new \GetterOrderDetail($getter);
+$router->addRoute("/order/getDetail", [$getterOrderDetail, "getDetail"]);
+
+require_once __DIR__ . '/order/set.php';
+$setterOrder = new \SetterOrder($setter, $getter);
+$router->addRoute("/order/set", [$setterOrder, "setOrder"], "POST");
+
+require_once __DIR__ . '/order/delete.php';
+$deleterOrder = new \DeleterOrder($setter);
+$router->addRoute("/order/delete", [$deleterOrder, "deleteOrder"], "DELETE");
+
+require_once __DIR__ . '/order/update.php';
+$updaterOrder = new \UpdaterOrder($setter, $getter);
+$router->addRoute("/order/update", [$updaterOrder, "updateOrder"], "POST");
+
+require_once __DIR__ . '/order/updateStatus.php';
+$updaterOrderStatus = new \UpdaterOrderStatus($setter);
+$router->addRoute("/order/updateStatus", [$updaterOrderStatus, "updateStatus"], "POST");
+
+require_once __DIR__ . '/order/payment/set.php';
+$setterOrderPayment = new \SetterOrderPayment($setter, $getter);
+$router->addRoute("/order/payment/set", [$setterOrderPayment, "setPayment"], "POST");
 
 require_once __DIR__ . '/supplier/get.php';
 $getterSupplier = new \GetterSupplier($getter);
@@ -136,6 +160,14 @@ require_once __DIR__ . '/warehouse/inventory/getProducts.php';
 $getterWarehouseProducts = new \GetterWarehouseProducts($getter);
 $router->addRoute("/warehouse/inventory/getProducts", [$getterWarehouseProducts, "getProducts"]);
 
+require_once __DIR__ . '/warehouse/inventory/searchProducts.php';
+$getterWarehouseSearchProducts = new \GetterWarehouseSearchProducts($getter);
+$router->addRoute("/warehouse/inventory/searchProducts", [$getterWarehouseSearchProducts, "searchProducts"]);
+
+require_once __DIR__ . '/warehouse/inventory/checkProduct.php';
+$getterWarehouseCheckProduct = new \GetterWarehouseCheckProduct($getter);
+$router->addRoute("/warehouse/inventory/checkProduct", [$getterWarehouseCheckProduct, "checkProduct"]);
+
 require_once __DIR__ . '/warehouse/io/get.php';
 $getterWarehouseIO = new \GetterWarehouseIO($getter);
 $router->addRoute("/warehouse/io/getList", [$getterWarehouseIO, "getList"]);
@@ -143,6 +175,53 @@ $router->addRoute("/warehouse/io/getList", [$getterWarehouseIO, "getList"]);
 require_once __DIR__ . '/warehouse/io/set.php';
 $setterWarehouseIO = new \SetterWarehouseIO($setter, $getter);
 $router->addRoute("/warehouse/io/set", [$setterWarehouseIO, "setIO"], "POST");
+
+require_once __DIR__ . '/warehouse/purchase/get.php';
+$getterWarehousePurchase = new \GetterWarehousePurchase($getter);
+$router->addRoute("/warehouse/purchase/getList", [$getterWarehousePurchase, "getList"]);
+$router->addRoute("/warehouse/purchase/getDetail", [$getterWarehousePurchase, "getDetail"]);
+
+require_once __DIR__ . '/warehouse/purchase/set.php';
+$setterWarehousePurchase = new \SetterWarehousePurchase($setter, $getter);
+$router->addRoute("/warehouse/purchase/set", [$setterWarehousePurchase, "setPurchase"], "POST");
+$router->addRoute("/warehouse/purchase/confirm", [$setterWarehousePurchase, "confirmPurchase"], "POST");
+$router->addRoute("/warehouse/purchase/complete", [$setterWarehousePurchase, "completePurchase"], "POST");
+
+// ===== 财务管理路由 =====
+require_once __DIR__ . '/finance/flow/get.php';
+$getterFinanceFlow = new \GetterFinanceFlow($getter);
+$router->addRoute("/finance/flow/getList", [$getterFinanceFlow, "getList"]);
+$router->addRoute("/finance/flow/getOverview", [$getterFinanceFlow, "getOverview"]);
+
+require_once __DIR__ . '/finance/flow/set.php';
+$setterFinanceFlow = new \SetterFinanceFlow($setter, $getter);
+$router->addRoute("/finance/flow/set", [$setterFinanceFlow, "setFlow"], "POST");
+
+require_once __DIR__ . '/finance/flow/delete.php';
+$deleterFinanceFlow = new \SetterFinanceFlowDelete($setter, $getter);
+$router->addRoute("/finance/flow/delete", [$deleterFinanceFlow, "deleteFlow"], "DELETE");
+
+require_once __DIR__ . '/finance/receivable/get.php';
+$getterFinanceReceivable = new \GetterFinanceReceivable($getter);
+$router->addRoute("/finance/receivable/getList", [$getterFinanceReceivable, "getList"]);
+$router->addRoute("/finance/receivable/getByCustomer", [$getterFinanceReceivable, "getByCustomer"]);
+
+require_once __DIR__ . '/finance/payable/get.php';
+$getterFinancePayable = new \GetterFinancePayable($getter);
+$router->addRoute("/finance/payable/getList", [$getterFinancePayable, "getList"]);
+
+require_once __DIR__ . '/finance/reconciliation/get.php';
+$getterFinanceReconciliation = new \GetterFinanceReconciliation($getter);
+$router->addRoute("/finance/reconciliation/getList", [$getterFinanceReconciliation, "getList"]);
+$router->addRoute("/finance/reconciliation/getDetail", [$getterFinanceReconciliation, "getDetail"]);
+
+require_once __DIR__ . '/finance/reconciliation/set.php';
+$setterFinanceReconciliation = new \SetterFinanceReconciliation($setter, $getter);
+$router->addRoute("/finance/reconciliation/reconcile", [$setterFinanceReconciliation, "reconcile"], "POST");
+
+require_once __DIR__ . '/finance/report/get.php';
+$getterFinanceReport = new \GetterFinanceReport($getter);
+$router->addRoute("/finance/report/getProfit", [$getterFinanceReport, "getProfit"]);
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $basePath = '/v1/api';

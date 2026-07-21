@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, watch } from 'vue';
 import { API_URL } from '@config/net';
-import Pagination from '@components/Pagination.vue';
+import from '@components/.vue';
 
 interface RawIOItem {
   id: string;
@@ -40,6 +40,8 @@ interface IOForm {
   product_number: number;
   direction: number;
   quantity: number;
+  unit_price: number;
+  is_finance: number;
   related_order_no: string;
   operator: string;
   remark: string;
@@ -78,6 +80,8 @@ const currentItem = reactive<IOForm>({
   product_number: 0,
   direction: 1,
   quantity: 0,
+  unit_price: 0,
+  is_finance: 0,
   related_order_no: '',
   operator: '',
   remark: '',
@@ -88,6 +92,8 @@ const formErrors = reactive<Record<keyof IOForm, string>>({
   product_number: '',
   direction: '',
   quantity: '',
+  unit_price: '',
+  is_finance: '',
   related_order_no: '',
   operator: '',
   remark: '',
@@ -204,6 +210,8 @@ const resetForm = () => {
   currentItem.product_number = 0;
   currentItem.direction = 1;
   currentItem.quantity = 0;
+  currentItem.unit_price = 0;
+  currentItem.is_finance = 0;
   currentItem.related_order_no = '';
   currentItem.operator = '';
   currentItem.remark = '';
@@ -276,13 +284,8 @@ watch([currentPage, pageSize], () => {
     <div class="page-header">
       <h2>进出库记录</h2>
       <div class="header-actions">
-        <input
-          v-model="searchKeyword"
-          type="text"
-          placeholder="搜索仓库、产品或单号..."
-          class="search-input"
-          @input="fetchList"
-        />
+        <input v-model="searchKeyword" type="text" placeholder="搜索仓库、产品或单号..." class="search-input"
+          @input="fetchList" />
         <button class="btn btn-primary" @click="openAdd">+ 新增记录</button>
       </div>
     </div>
@@ -330,12 +333,7 @@ watch([currentPage, pageSize], () => {
           </tr>
         </tbody>
       </table>
-      <Pagination
-        v-if="total > 0"
-        :total="total"
-        v-model:currentPage="currentPage"
-        v-model:pageSize="pageSize"
-      />
+      < v-if="total > 0" :total="total" v-model:currentPage="currentPage" v-model:pageSize="pageSize" />
     </div>
 
     <div v-if="modalVisible" class="modal-overlay" @click.self="modalVisible = false">
@@ -349,20 +347,10 @@ watch([currentPage, pageSize], () => {
             <div class="form-group">
               <label>关联仓库 <span class="required">*</span></label>
               <div class="warehouse-select-wrapper">
-                <input
-                  v-model="warehouseSearch"
-                  type="text"
-                  placeholder="输入仓库名称搜索"
-                  class="warehouse-input"
-                  @input="onWarehouseSearch"
-                  @focus="onWarehouseSearch"
-                />
+                <input v-model="warehouseSearch" type="text" placeholder="输入仓库名称搜索" class="warehouse-input"
+                  @input="onWarehouseSearch" @focus="onWarehouseSearch" />
                 <ul v-if="warehouseList.length" class="dropdown-list">
-                  <li
-                    v-for="item in warehouseList"
-                    :key="item.id"
-                    @click="selectWarehouse(item)"
-                  >
+                  <li v-for="item in warehouseList" :key="item.id" @click="selectWarehouse(item)">
                     {{ item.name }}（{{ item.contact || '无联系人' }}）
                   </li>
                   <li v-if="warehouseLoading" class="loading-item">加载中...</li>
@@ -374,20 +362,10 @@ watch([currentPage, pageSize], () => {
             <div class="form-group">
               <label>产品编号 <span class="required">*</span></label>
               <div class="warehouse-select-wrapper">
-                <input
-                  v-model="productSearch"
-                  type="text"
-                  placeholder="输入产品名称搜索"
-                  class="warehouse-input"
-                  @input="onProductSearch"
-                  @focus="onProductSearch"
-                />
+                <input v-model="productSearch" type="text" placeholder="输入产品名称搜索" class="warehouse-input"
+                  @input="onProductSearch" @focus="onProductSearch" />
                 <ul v-if="productList.length" class="dropdown-list">
-                  <li
-                    v-for="item in productList"
-                    :key="item.number"
-                    @click="selectProduct(item)"
-                  >
+                  <li v-for="item in productList" :key="item.number" @click="selectProduct(item)">
                     <span class="product-name">{{ item.name }}</span>
                     <span class="product-supplier">来自：{{ item.supplier_name || '未知供应商' }}</span>
                   </li>
@@ -410,6 +388,19 @@ watch([currentPage, pageSize], () => {
               <label>数量 <span class="required">*</span></label>
               <input v-model.number="currentItem.quantity" type="number" min="1" placeholder="0" />
               <span v-if="formErrors.quantity" class="error-msg">{{ formErrors.quantity }}</span>
+            </div>
+
+            <div class="form-group">
+              <label>单价</label>
+              <input v-model.number="currentItem.unit_price" type="number" step="0.01" min="0" placeholder="0.00" />
+            </div>
+
+            <div class="form-group">
+              <label>计入财务系统</label>
+              <label class="checkbox-label">
+                <input v-model.number="currentItem.is_finance" type="checkbox" :value="1" />
+                <span>是（同步写入财务流水）</span>
+              </label>
             </div>
 
             <div class="form-group">
@@ -452,15 +443,18 @@ watch([currentPage, pageSize], () => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+
   h2 {
     font-size: 1.5rem;
     color: var(--text-primary);
     margin: 0;
   }
+
   .header-actions {
     display: flex;
     align-items: center;
     gap: 1rem;
+
     .search-input {
       padding: 0.4rem 0.8rem;
       border: 1px solid var(--border-color);
@@ -469,6 +463,7 @@ watch([currentPage, pageSize], () => {
       color: var(--text-primary);
       font-size: 0.9rem;
       min-width: 220px;
+
       &:focus {
         outline: none;
         border-color: var(--link-color);
@@ -486,17 +481,21 @@ watch([currentPage, pageSize], () => {
   transition: all 0.2s;
   border: none;
   font-size: 0.9rem;
+
   &.btn-primary {
     background: var(--btn-primary-bg);
     color: var(--btn-primary-text);
+
     &:hover {
       background: var(--btn-primary-hover);
       box-shadow: 0 2px 8px rgba(74, 144, 217, 0.3);
     }
   }
+
   &.btn-secondary {
     background: var(--bg-button);
     color: var(--text-primary);
+
     &:hover {
       background: var(--bg-button-hover);
     }
@@ -519,30 +518,43 @@ watch([currentPage, pageSize], () => {
   thead {
     background: var(--table-header-bg);
     color: var(--table-header-text);
+
     th {
       padding: 0.8rem 0.5rem;
       text-align: center;
       font-weight: 600;
       border-right: 1px solid var(--border-color);
-      &:last-child { border-right: none; }
+
+      &:last-child {
+        border-right: none;
+      }
     }
   }
 
   tbody {
     tr {
       border-bottom: 1px solid var(--border-color);
+
       &:hover {
         background: var(--table-row-hover);
       }
-      &:last-child { border-bottom: none; }
+
+      &:last-child {
+        border-bottom: none;
+      }
     }
+
     td {
       padding: 0.6rem 0.5rem;
       text-align: center;
       vertical-align: middle;
       border-right: 1px solid var(--border-color);
-      &:last-child { border-right: none; }
+
+      &:last-child {
+        border-right: none;
+      }
     }
+
     .loading-text,
     .empty-text {
       color: var(--text-muted);
@@ -558,10 +570,12 @@ watch([currentPage, pageSize], () => {
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
+
   &.direction-in {
     background: #d4edda;
     color: #155724;
   }
+
   &.direction-out {
     background: #f8d7da;
     color: #721c24;
@@ -570,6 +584,7 @@ watch([currentPage, pageSize], () => {
 
 .warehouse-select-wrapper {
   position: relative;
+
   .warehouse-input {
     width: 100%;
     padding: 0.5rem 0.75rem;
@@ -578,12 +593,14 @@ watch([currentPage, pageSize], () => {
     background: var(--bg-body);
     color: var(--text-primary);
     font-size: 0.95rem;
+
     &:focus {
       outline: none;
       border-color: var(--link-color);
       box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
     }
   }
+
   .dropdown-list {
     position: absolute;
     top: 100%;
@@ -598,28 +615,34 @@ watch([currentPage, pageSize], () => {
     padding: 4px 0;
     margin: 2px 0 0;
     z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
     li {
       padding: 6px 12px;
       cursor: pointer;
+
       &:hover {
         background: var(--bg-button);
       }
     }
+
     .loading-item {
       color: var(--text-muted);
       text-align: center;
       padding: 6px 12px;
       cursor: default;
     }
+
     li {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 0.5rem;
+
       .product-name {
         font-weight: 500;
       }
+
       .product-supplier {
         font-size: 0.8rem;
         color: var(--text-muted);
@@ -641,6 +664,7 @@ watch([currentPage, pageSize], () => {
   align-items: center;
   z-index: 9999;
 }
+
 .modal-content {
   background: var(--bg-card);
   border-radius: 12px;
@@ -648,39 +672,54 @@ watch([currentPage, pageSize], () => {
   max-width: 520px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
+
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
+
   h3 {
     margin: 0;
     color: var(--text-primary);
   }
+
   .modal-close {
     background: none;
     border: none;
     font-size: 1.8rem;
     color: var(--text-muted);
     cursor: pointer;
-    &:hover { color: var(--text-primary); }
+
+    &:hover {
+      color: var(--text-primary);
+    }
   }
 }
+
 .modal-body {
   padding: 1.5rem;
+
   .form-group {
     margin-bottom: 1rem;
+
     label {
       display: block;
       font-weight: 500;
       margin-bottom: 0.3rem;
       color: var(--text-primary);
-      .required { color: #e53e3e; margin-left: 2px; }
+
+      .required {
+        color: #e53e3e;
+        margin-left: 2px;
+      }
     }
-    input, select {
+
+    input,
+    select {
       width: 100%;
       padding: 0.5rem 0.75rem;
       border: 1px solid var(--border-color);
@@ -688,19 +727,33 @@ watch([currentPage, pageSize], () => {
       background: var(--bg-body);
       color: var(--text-primary);
       font-size: 0.95rem;
+
       &:focus {
         outline: none;
         border-color: var(--link-color);
         box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
       }
     }
+
     .error-msg {
       color: #e53e3e;
       font-size: 0.8rem;
       margin-top: 0.2rem;
       display: block;
     }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+
+      input {
+        width: auto;
+      }
+    }
   }
+
   .form-actions {
     display: flex;
     justify-content: flex-end;

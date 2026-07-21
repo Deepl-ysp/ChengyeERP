@@ -1,6 +1,5 @@
 const BASE_URL = "http://api.localhost:5734/v1/api";
 
-// 工具：打印原始响应并尝试解析 JSON
 async function fetchAndLog(url, options = {}) {
   const res = await fetch(url, options);
   const text = await res.text();
@@ -15,7 +14,6 @@ async function fetchAndLog(url, options = {}) {
   }
 }
 
-// 测试 GET
 async function testGetOrderList(page, size) {
   const url = `${BASE_URL}/order/getList/${page}/${size}`;
   await fetchAndLog(url);
@@ -31,7 +29,6 @@ async function testGetSupplierList(page, size) {
   await fetchAndLog(url);
 }
 
-// 测试 POST
 async function testPostSupplier(payload) {
   const url = `${BASE_URL}/supplier/set`;
   await fetchAndLog(url, {

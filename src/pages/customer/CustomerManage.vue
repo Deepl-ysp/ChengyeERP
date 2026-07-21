@@ -2,7 +2,8 @@
 import { ref, reactive, onMounted, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { API_URL } from '@config/net';
-import Pagination from '@components/Pagination.vue';
+import { confirm } from '@config/confirmSettings';
+import from '@components/.vue';
 
 interface RawPriceItem {
   id: string;
@@ -69,7 +70,7 @@ const currentItem = reactive<PriceForm>({
   specification: '',
   unit_price: 0,
   unit: '件',
-  effective_date: new Date().toISOString().split('T')[0],
+  effective_date: new Date().toISOString().split('T')[0] || '',
   expiry_date: null,
   status: 0,
   remark: '',
@@ -170,7 +171,7 @@ const resetForm = () => {
   currentItem.specification = '';
   currentItem.unit_price = 0;
   currentItem.unit = '件';
-  currentItem.effective_date = new Date().toISOString().split('T')[0];
+  currentItem.effective_date = new Date().toISOString().split('T')[0] || '';
   currentItem.expiry_date = null;
   currentItem.status = 0;
   currentItem.remark = '';
@@ -238,7 +239,7 @@ const handleSubmit = async () => {
 };
 
 const handleDelete = async (item: PriceItem) => {
-  if (!confirm(`确认删除"${item.product_name}"吗？`)) return;
+  if (!confirm(`确认删除"${item.product_name}"吗？`, 'customerManage.deleteProduct')) return;
   try {
     const res = await fetch(`${API_URL}v1/api/customer/price/delete?number=${item.number}`, {
       method: 'DELETE',
@@ -277,13 +278,7 @@ watch([currentPage, pageSize], () => {
     <div class="page-header">
       <h2>{{ customerName || '客户' }} - 货物价格</h2>
       <div class="header-actions">
-        <input
-          v-model="searchKeyword"
-          type="text"
-          placeholder="搜索产品名称..."
-          class="search-input"
-          @input="fetchList"
-        />
+        <input v-model="searchKeyword" type="text" placeholder="搜索产品名称..." class="search-input" @input="fetchList" />
         <button class="btn btn-primary" @click="openAdd">+ 新增价格</button>
       </div>
     </div>
@@ -332,12 +327,7 @@ watch([currentPage, pageSize], () => {
           </tr>
         </tbody>
       </table>
-      <Pagination
-        v-if="total > 0"
-        :total="total"
-        v-model:currentPage="currentPage"
-        v-model:pageSize="pageSize"
-      />
+      < v-if="total > 0" :total="total" v-model:currentPage="currentPage" v-model:pageSize="pageSize" />
     </div>
 
     <div v-if="modalVisible" class="modal-overlay" @click.self="modalVisible = false">
@@ -421,15 +411,18 @@ watch([currentPage, pageSize], () => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+
   h2 {
     font-size: 1.5rem;
     color: var(--text-primary);
     margin: 0;
   }
+
   .header-actions {
     display: flex;
     align-items: center;
     gap: 0.8rem;
+
     .search-input {
       padding: 0.4rem 0.8rem;
       border: 1px solid var(--border-color);
@@ -438,6 +431,7 @@ watch([currentPage, pageSize], () => {
       color: var(--text-primary);
       font-size: 0.9rem;
       min-width: 200px;
+
       &:focus {
         outline: none;
         border-color: var(--link-color);
@@ -455,37 +449,47 @@ watch([currentPage, pageSize], () => {
   transition: all 0.2s;
   border: none;
   font-size: 0.9rem;
+
   &.btn-sm {
     padding: 2px 8px;
     font-size: 0.8rem;
     margin-right: 0.3rem;
   }
+
   &.btn-primary {
     background: var(--btn-primary-bg);
     color: var(--btn-primary-text);
+
     &:hover {
       background: var(--btn-primary-hover);
       box-shadow: 0 2px 8px rgba(74, 144, 217, 0.3);
     }
   }
+
   &.btn-secondary {
     background: var(--bg-button);
     color: var(--text-primary);
+
     &:hover {
       background: var(--bg-button-hover);
     }
   }
+
   &.btn-edit {
     background: #cce5ff;
     color: #004085;
+
     &:hover {
       background: #b8d4ff;
     }
+
     margin-right: 0.3rem;
   }
+
   &.btn-delete {
     background: #f8d7da;
     color: #721c24;
+
     &:hover {
       background: #f5c6cb;
     }
@@ -508,30 +512,43 @@ watch([currentPage, pageSize], () => {
   thead {
     background: var(--table-header-bg);
     color: var(--table-header-text);
+
     th {
       padding: 0.8rem 0.5rem;
       text-align: center;
       font-weight: 600;
       border-right: 1px solid var(--border-color);
-      &:last-child { border-right: none; }
+
+      &:last-child {
+        border-right: none;
+      }
     }
   }
 
   tbody {
     tr {
       border-bottom: 1px solid var(--border-color);
+
       &:hover {
         background: var(--table-row-hover);
       }
-      &:last-child { border-bottom: none; }
+
+      &:last-child {
+        border-bottom: none;
+      }
     }
+
     td {
       padding: 0.6rem 0.5rem;
       text-align: center;
       vertical-align: middle;
       border-right: 1px solid var(--border-color);
-      &:last-child { border-right: none; }
+
+      &:last-child {
+        border-right: none;
+      }
     }
+
     .loading-text,
     .empty-text {
       color: var(--text-muted);
@@ -547,10 +564,12 @@ watch([currentPage, pageSize], () => {
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
+
   &.status-enable {
     background: #d4edda;
     color: #155724;
   }
+
   &.status-disabled {
     background: #e2e8f0;
     color: #4a5568;
@@ -569,6 +588,7 @@ watch([currentPage, pageSize], () => {
   align-items: center;
   z-index: 9999;
 }
+
 .modal-content {
   background: var(--bg-card);
   border-radius: 12px;
@@ -576,39 +596,54 @@ watch([currentPage, pageSize], () => {
   max-width: 480px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
+
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
+
   h3 {
     margin: 0;
     color: var(--text-primary);
   }
+
   .modal-close {
     background: none;
     border: none;
     font-size: 1.8rem;
     color: var(--text-muted);
     cursor: pointer;
-    &:hover { color: var(--text-primary); }
+
+    &:hover {
+      color: var(--text-primary);
+    }
   }
 }
+
 .modal-body {
   padding: 1.5rem;
+
   .form-group {
     margin-bottom: 1rem;
+
     label {
       display: block;
       font-weight: 500;
       margin-bottom: 0.3rem;
       color: var(--text-primary);
-      .required { color: #e53e3e; margin-left: 2px; }
+
+      .required {
+        color: #e53e3e;
+        margin-left: 2px;
+      }
     }
-    input, select {
+
+    input,
+    select {
       width: 100%;
       padding: 0.5rem 0.75rem;
       border: 1px solid var(--border-color);
@@ -616,12 +651,14 @@ watch([currentPage, pageSize], () => {
       background: var(--bg-body);
       color: var(--text-primary);
       font-size: 0.95rem;
+
       &:focus {
         outline: none;
         border-color: var(--link-color);
         box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
       }
     }
+
     .error-msg {
       color: #e53e3e;
       font-size: 0.8rem;
@@ -629,6 +666,7 @@ watch([currentPage, pageSize], () => {
       display: block;
     }
   }
+
   .form-actions {
     display: flex;
     justify-content: flex-end;

@@ -40,6 +40,7 @@ onMounted(() => {
       <div class="viewMenu">
         <RouterLink to="/warehouse/list" class="viewNavLink" active-class="viewActive">仓库列表</RouterLink>
         <RouterLink to="/warehouse/create" class="viewNavLink" active-class="viewActive">创建仓库</RouterLink>
+        <RouterLink to="/warehouse/purchase" class="viewNavLink" active-class="viewActive">采购管理</RouterLink>
         <RouterLink to="/warehouse/inventory" class="viewNavLink" active-class="viewActive">产品管理</RouterLink>
         <RouterLink to="/warehouse/io" class="viewNavLink" active-class="viewActive">进出库</RouterLink>
         <div v-if="warehouses.length > 0" class="menu-divider"></div>

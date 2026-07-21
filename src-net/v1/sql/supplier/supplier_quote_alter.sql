@@ -1,0 +1,2 @@
+ALTER TABLE `supplier_quote` ADD COLUMN `supplier_id` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '供应商ID（关联supplier_main.id）' AFTER `specification`;
+ALTER TABLE `supplier_quote` ADD KEY `idx_supplier_id` (`supplier_id`);
