@@ -512,6 +512,34 @@
   font-family: inherit;
 }
 
+.datetime-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.datetime-row .form-input {
+  flex: 1;
+}
+
+.btn-reset-time {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.btn-reset-time:hover {
+  background: var(--link-color);
+  color: #fff;
+  border-color: var(--link-color);
+}
+
 .select-wrapper {
   position: relative;
 }

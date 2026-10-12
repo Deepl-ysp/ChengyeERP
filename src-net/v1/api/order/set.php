@@ -32,6 +32,18 @@ class SetterOrder
         $receiverName = $data['receiver_name'] ?? '未填写';
         $receiverAddress = $data['receiver_address'] ?? '未填写';
         $receiverPhone = $data['receiver_phone'] ?? '未填写';
+
+        // 自定义下单时间（可选，格式 YYYY-MM-DD HH:mm:ss，默认当前时间）
+        $customCreateTime = trim($data['create_time'] ?? '');
+        if ($customCreateTime !== '') {
+            $ts = strtotime($customCreateTime);
+            if ($ts === false) {
+                return ['success' => false, 'message' => 'create_time 格式错误，需为 YYYY-MM-DD HH:mm:ss'];
+            }
+            $createTimeValue = date('Y-m-d H:i:s', $ts);
+        } else {
+            $createTimeValue = date('Y-m-d H:i:s');
+        }
         $remark = $data['remark'] ?? '';
         $items = $data['items'] ?? [];
         $imageBase64 = $data['image_path'] ?? '';
@@ -97,6 +109,8 @@ class SetterOrder
             'remark' => $finalRemark,
             'image_path' => $imagePath,
             'is_deleted' => 0,
+            'create_time' => $createTimeValue,
+            'update_time' => $createTimeValue,
         ];
 
         try {

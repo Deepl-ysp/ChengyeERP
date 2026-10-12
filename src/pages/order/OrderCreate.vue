@@ -75,6 +75,8 @@ interface OrderForm {
   receiver_address: string;
   receiver_phone: string;
   remark: string;
+  // 自定义下单时间（默认 = 现在）
+  create_time: string;
 }
 
 const router = useRouter();
@@ -108,7 +110,21 @@ const form = reactive<OrderForm>({
   receiver_address: '',
   receiver_phone: '',
   remark: '',
+  create_time: nowDateTimeLocal(),
 });
+
+// 格式化当前时间为 datetime-local 需要的 YYYY-MM-DDTHH:mm
+function nowDateTimeLocal(): string {
+  const d = new Date();
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+// datetime-local 转 YYYY-MM-DD HH:mm:ss
+const formatCreateTime = (val: string): string => {
+  if (!val) return '';
+  return val.replace('T', ' ') + ':00';
+}
 
 // 切换订单类型时重置相关字段
 const switchOrderType = (type: OrderType) => {
@@ -423,6 +439,7 @@ const submitOrder = async () => {
     receiver_address: form.receiver_address || '未填写',
     receiver_phone: form.receiver_phone || '未填写',
     remark: form.remark || '',
+    create_time: formatCreateTime(form.create_time),
     total_quantity: totalQuantity.value,
     total_amount: totalAmount.value,
     items: cart.value.map(item => ({
@@ -524,7 +541,7 @@ const previewData = computed(() => ({
   receiver_address: form.receiver_address || '未填写',
   receiver_phone: form.receiver_phone || '未填写',
   remark: form.remark || '未填写',
-  create_time: new Date().toLocaleString('zh-CN'),
+  create_time: form.create_time ? formatCreateTime(form.create_time) : new Date().toLocaleString('zh-CN'),
   seller_address: SELLER_ADDRESS,
   seller_phone: SELLER_PHONE,
   items: cart.value,
@@ -882,6 +899,23 @@ watch(orderType, (val) => {
             </div>
 
             <div class="form-divider"></div>
+
+            <div class="form-group">
+              <label>
+                下单时间
+                <span class="optional">（可改）</span>
+              </label>
+              <div class="datetime-row">
+                <input
+                  v-model="form.create_time"
+                  type="datetime-local"
+                  class="form-input"
+                />
+                <button type="button" class="btn-reset-time" @click="form.create_time = nowDateTimeLocal()">
+                  现在
+                </button>
+              </div>
+            </div>
 
             <div class="form-group">
               <label>备注</label>
